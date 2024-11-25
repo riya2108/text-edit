@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Editor App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f7fc; /* Light background for the page */
+      color: #333; /* Dark text color for better readability */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      text-align: center;
+      color: #4A90E2; /* A pleasant blue for the heading */
+      margin-bottom: 20px;
+      font-size: 2rem;
+    }
+
+    textarea {
+      width: 90%;
+      max-width: 800px;
+      height: 150px;
+      margin-bottom: 20px;
+      padding: 15px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #ffffff; /* White background for the text area */
+      color: #333;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    textarea:focus {
+      border-color: #4A90E2; /* Highlight border when focused */
+      outline: none;
+      box-shadow: 0 0 5px rgba(74, 144, 226, 0.6); /* Soft focus effect */
+    }
+
+    .buttons {
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4A90E2; /* Blue background for buttons */
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+    }
+
+    button:hover {
+      background-color: #357ABD; /* Darker blue when hovered */
+      transform: scale(1.05); /* Slight zoom effect */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Slight shadow on hover */
+    }
+
+    button:active {
+      transform: scale(0.98); /* Slightly shrink when clicked */
+    }
+
+    .results {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #ffffff; /* White background for result stats */
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 800px;
+      text-align: center;
+    }
+
+    .results p {
+      margin: 8px 0;
+      font-size: 16px;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      textarea {
+        height: 120px;
+      }
+
+      button {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+
+      .results p {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Text Editor App</h1>
+
+  <textarea id="textInput" placeholder="Type or paste your text here..."></textarea>
+
+  <div class="buttons">
+    <button onclick="convertToCamelCase()">Convert to camelCase</button>
+    <button onclick="convertToSnakeCase()">Convert to snake_case</button>
+    <button onclick="convertToPascalCase()">Convert to PascalCase</button>
+    <button onclick="boldText()">Bold</button>
+    <button onclick="italicText()">Italic</button>
+    <button onclick="underlineText()">Underline</button>
+    <button onclick="clearFormatting()">Clear Formatting</button>
+  </div>
+
+  <div class="results">
+    <p><strong>Word Count:</strong> <span id="wordCount">0</span></p>
+    <p><strong>Character Count:</strong> <span id="charCount">0</span></p>
+    <p><strong>Estimated Reading Time:</strong> <span id="readingTime">0</span> seconds</p>
+  </div>
+
+  <script>
+    const textInput = document.getElementById('textInput');
+    const wordCount = document.getElementById('wordCount');
+    const charCount = document.getElementById('charCount');
+    const readingTime = document.getElementById('readingTime');
+
+    textInput.addEventListener('input', updateStats);
+
+    function updateStats() {
+      const text = textInput.value;
+      const words = text.trim().split(/\s+/).filter(Boolean).length;
+      const chars = text.length;
+      const time = Math.ceil(words / 200 * 60); // Assuming 200 WPM reading speed
+
+      wordCount.textContent = words;
+      charCount.textContent = chars;
+      readingTime.textContent = time;
+    }
+
+    function convertToCamelCase() {
+      const text = textInput.value;
+      const camelCase = text
+        .toLowerCase()
+        .replace(/[^a-zA-Z0-9]+(.)/g, (match, char) => char.toUpperCase());
+      textInput.value = camelCase;
+      updateStats();
+    }
+
+    function convertToSnakeCase() {
+      const text = textInput.value;
+      const snakeCase = text
+        .toLowerCase()
+        .replace(/[^a-zA-Z0-9]+/g, '_');
+      textInput.value = snakeCase;
+      updateStats();
+    }
+
+    function convertToPascalCase() {
+      const text = textInput.value;
+      const pascalCase = text
+        .replace(/[^a-zA-Z0-9]+(.)?/g, (match, char) => char ? char.toUpperCase() : '')
+        .replace(/^./, (match) => match.toUpperCase());
+      textInput.value = pascalCase;
+      updateStats();
+    }
+
+    function boldText() {
+      textInput.style.fontWeight = textInput.style.fontWeight === 'bold' ? 'normal' : 'bold';
+    }
+
+    function italicText() {
+      textInput.style.fontStyle = textInput.style.fontStyle === 'italic' ? 'normal' : 'italic';
+    }
+
+    function underlineText() {
+      textInput.style.textDecoration = textInput.style.textDecoration === 'underline' ? 'none' : 'underline';
+    }
+
+    function clearFormatting() {
+      textInput.style.fontWeight = 'normal';
+      textInput.style.fontStyle = 'normal';
+      textInput.style.textDecoration = 'none';
+    }
+  </script>
+</body>
+</html>
